@@ -1,0 +1,15 @@
+package router
+
+import (
+	"go-project/internal/container"
+
+	"github.com/gin-gonic/gin"
+)
+
+func SetupRouter(container *container.Container) *gin.Engine {
+	route := gin.New()
+	v1 := route.Group("/api/v1")
+	UserRounter(v1, container.UserContainer.UserHandler)
+
+	return route
+}
