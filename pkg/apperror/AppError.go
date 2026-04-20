@@ -3,9 +3,9 @@ package apperror
 type Kind string
 
 type AppError struct {
-	Code    int
-	Message string
-	Kind    Kind
+	code    int
+	message string
+	kind    Kind
 }
 
 const (
@@ -14,21 +14,23 @@ const (
 	Conflict     Kind = "conflict"
 )
 
-func (e *AppError) Error() string { return e.Message }
+func (e *AppError) Error() string { return e.message }
+func (e *AppError) Code() int     { return e.code }
+func (e *AppError) Kind() Kind    { return e.kind }
 
 var (
-	ErrNotFound     = &AppError{Code: 404, Kind: NotFound, Message: "not found"}
-	ErrUnauthorized = &AppError{Code: 401, Kind: Unauthorized, Message: "unauthorized"}
-	ErrConflict     = &AppError{Code: 409, Kind: Conflict, Message: "conflict"}
+	ErrNotFound     = &AppError{code: 404, kind: NotFound, message: "not found"}
+	ErrUnauthorized = &AppError{code: 401, kind: Unauthorized, message: "unauthorized"}
+	ErrConflict     = &AppError{code: 409, kind: Conflict, message: "conflict"}
 )
 
+func New(code int, kind Kind, message string) error {
+	return &AppError{code: code, kind: kind, message: message}
+}
 func (e *AppError) Is(target error) bool {
 	t, ok := target.(*AppError)
 	if !ok {
 		return false
 	}
-	if t.Message == "" {
-		return e.Kind == t.Kind
-	}
-	return e.Kind == t.Kind && e.Message == t.Message
+	return e.kind == t.kind
 }

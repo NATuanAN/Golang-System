@@ -8,7 +8,7 @@ import (
 )
 
 type UserHandler interface {
-	GetUser(c *gin.Context)
+	GetById(c *gin.Context)
 	GetAll(c *gin.Context)
 }
 
@@ -20,7 +20,7 @@ func NewUserHandler(service service.UserService) UserHandler {
 	return &userHandler{service: service}
 }
 
-func (h *userHandler) GetUser(c *gin.Context) {
+func (h *userHandler) GetById(c *gin.Context) {
 	user, err := h.service.GetById(c.Request.Context(), c.Param("id"))
 	response.Response(c, user, err)
 }

@@ -8,13 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserContainer struct {
+type userContainer struct {
 	UserHandler handler.UserHandler
 }
 
-func NewUserContainer(db *gorm.DB) *UserContainer {
+func NewUserContainer(db *gorm.DB) *userContainer {
 	userRepo := repository.NewUserRepo(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
-	return &UserContainer{UserHandler: userHandler}
+
+	return &userContainer{UserHandler: userHandler}
 }

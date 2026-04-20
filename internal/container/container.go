@@ -5,10 +5,12 @@ import (
 )
 
 type Container struct {
-	UserContainer *UserContainer
+	*userContainer
+	*productContainer
 }
 
 func NewContainer(db *gorm.DB) *Container {
 	userContainer := NewUserContainer(db)
-	return &Container{UserContainer: userContainer}
+	productContainer := NewProductContainer(db)
+	return &Container{userContainer, productContainer}
 }

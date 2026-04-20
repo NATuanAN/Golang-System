@@ -21,10 +21,11 @@ func Success(c *gin.Context, data any) {
 func Error(c *gin.Context, err error) {
 	var appErr *apperror.AppError
 	if errors.As(err, &appErr) {
-		c.JSON(appErr.Code, gin.H{
-			"error_code": appErr.Code,
-			"message":    appErr.Message,
+		c.JSON(appErr.Code(), gin.H{
+			"error_code": appErr.Code(),
+			"message":    appErr.Error(),
 		})
+
 		return
 	}
 	c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})

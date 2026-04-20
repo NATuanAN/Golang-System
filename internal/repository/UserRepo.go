@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-project/internal/domain"
 	"go-project/internal/model"
+	"go-project/pkg/apperror"
 
 	"gorm.io/gorm"
 )
@@ -15,7 +15,7 @@ type userRepo struct {
 }
 
 func NewUserRepo(db *gorm.DB) *userRepo {
-	return &userRepo{db: db}
+	return &userRepo{db}
 }
 
 func (r *userRepo) FindByID(ctx context.Context, id string) (*model.User, error) {
@@ -23,7 +23,7 @@ func (r *userRepo) FindByID(ctx context.Context, id string) (*model.User, error)
 	err := r.db.WithContext(ctx).First(&user, "userid = ?", id).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, domain.ErrUserNotFound
+			return nil, apperror.ErrNotFound
 		}
 		return nil, fmt.Errorf("userRepo.FindByID: %w", err)
 	}

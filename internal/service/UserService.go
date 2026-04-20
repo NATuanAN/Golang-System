@@ -6,7 +6,7 @@ import (
 	"go-project/internal/model"
 )
 
-type UserRepository interface {
+type UserRepo interface {
 	FindByID(ctx context.Context, id string) (*model.User, error)
 	FindAll(ctx context.Context) ([]model.User, error)
 }
@@ -16,10 +16,10 @@ type UserService interface {
 }
 
 type userService struct {
-	repo UserRepository
+	repo UserRepo
 }
 
-func NewUserService(repo UserRepository) UserService {
+func NewUserService(repo UserRepo) UserService {
 	return &userService{repo: repo}
 }
 
@@ -32,9 +32,9 @@ func (s *userService) GetById(ctx context.Context, id string) (*model.User, erro
 }
 
 func (s *userService) GetAll(ctx context.Context) ([]model.User, error) {
-	user, err := s.repo.FindAll(ctx)
+	users, err := s.repo.FindAll(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("GetAll have error:  %w", err)
 	}
-	return user, nil
+	return users, nil
 }
