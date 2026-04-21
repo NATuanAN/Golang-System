@@ -8,6 +8,7 @@ import (
 
 type ProductRepo interface {
 	FindAll(ctx context.Context) ([]model.Product, error)
+	FindById(ctx context.Context, id int) (*model.Product, error)
 }
 
 type productService struct {
@@ -23,4 +24,13 @@ func (s *productService) GetAll(ctx context.Context) ([]model.Product, error) {
 		return nil, fmt.Errorf("GetAll have error:  %w", err)
 	}
 	return productList, nil
+}
+func (s *productService) GetById(ctx context.Context, id int) (*model.Product, error) {
+	product, err := s.repo.FindById(ctx, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return product, nil
 }

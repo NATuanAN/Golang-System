@@ -2,7 +2,10 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"go-project/internal/model"
+	"go-project/pkg/apperror"
 
 	"gorm.io/gorm"
 )
@@ -22,4 +25,17 @@ func (r *productRepo) FindAll(ctx context.Context) ([]model.Product, error) {
 		return nil, err
 	}
 	return productList, nil
+}
+
+func (r *productRepo) FindById(ctx context.Context, id int) (*model.Product, error) {
+	var product model.Product
+	err := r.db.WithContext(ctx).First(&product, "productid = ?", id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperror.ErrNotFound
+		}
+		return nil, fmt.Errorf("userRepo.FindByID: %w", err)
+	}
+
+	return &product, nil
 }

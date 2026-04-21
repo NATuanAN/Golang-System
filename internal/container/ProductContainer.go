@@ -11,6 +11,7 @@ import (
 
 type ProductHandler interface {
 	GetAll(c *gin.Context)
+	GetById(c *gin.Context)
 }
 type productContainer struct {
 	ProductHandler

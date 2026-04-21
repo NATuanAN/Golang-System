@@ -6,9 +6,11 @@ import (
 
 type ProductHandler interface {
 	GetAll(c *gin.Context)
+	GetById(c *gin.Context)
 }
 
 func ProductRounter(rg *gin.RouterGroup, handler ProductHandler) {
 	products := rg.Group("/products")
 	products.GET("/all", handler.GetAll)
+	products.GET("/:id", handler.GetById)
 }

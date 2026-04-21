@@ -25,7 +25,6 @@ func Error(c *gin.Context, err error) {
 			"error_code": appErr.Code(),
 			"message":    appErr.Error(),
 		})
-
 		return
 	}
 	c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
