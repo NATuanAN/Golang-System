@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"go-project/internal/model"
 	"go-project/internal/service"
 	"go-project/pkg/response"
 
@@ -10,6 +11,7 @@ import (
 type UserHandler interface {
 	GetById(c *gin.Context)
 	GetAll(c *gin.Context)
+	CreateUser(c *gin.Context)
 }
 
 type userHandler struct {
@@ -17,7 +19,7 @@ type userHandler struct {
 }
 
 func NewUserHandler(service service.UserService) UserHandler {
-	return &userHandler{service: service}
+	return &userHandler{service}
 }
 
 func (h *userHandler) GetById(c *gin.Context) {
@@ -26,6 +28,16 @@ func (h *userHandler) GetById(c *gin.Context) {
 }
 
 func (h *userHandler) GetAll(c *gin.Context) {
-	users, err := h.service.GetAll(c)
+	users, err := h.service.GetAll(c.Request.Context())
 	response.Response(c, users, err)
+}
+
+func (h *userHandler) CreateUser(c *gin.Context) {
+	var user model.User
+	if err := c.ShouldBindBodyWithJSON(&user); err != nil {
+		response.Response(c, nil, err)
+		return
+	}
+	result, err := h.service.CreateUser(c, &user)
+	response.Response(c, result, err)
 }

@@ -27,6 +27,10 @@ func (h *productHandler) GetAll(c *gin.Context) {
 
 func (h *productHandler) GetById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Response(c, nil, err)
+		return
+	}
 	products, err := h.service.GetById(c, id)
 	response.Response(c, products, err)
 }

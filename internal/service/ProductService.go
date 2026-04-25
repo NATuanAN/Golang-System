@@ -15,7 +15,7 @@ type productService struct {
 	repo ProductRepo
 }
 
-func ProductService(repo ProductRepo) *productService {
+func NewProductService(repo ProductRepo) *productService {
 	return &productService{repo}
 }
 func (s *productService) GetAll(ctx context.Context) ([]model.Product, error) {
@@ -29,7 +29,7 @@ func (s *productService) GetById(ctx context.Context, id int) (*model.Product, e
 	product, err := s.repo.FindById(ctx, id)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("productService.GetByID: %w", err)
 	}
 
 	return product, nil

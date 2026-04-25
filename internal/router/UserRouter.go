@@ -10,4 +10,5 @@ func UserRounter(rg *gin.RouterGroup, handler handler.UserHandler) {
 	users := rg.Group("/users")
 	users.GET("/:id", handler.GetById)
 	users.GET("/all", handler.GetAll)
+	users.POST("/create", handler.CreateUser)
 }

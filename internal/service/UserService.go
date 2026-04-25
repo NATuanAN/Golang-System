@@ -9,10 +9,12 @@ import (
 type UserRepo interface {
 	FindByID(ctx context.Context, id string) (*model.User, error)
 	FindAll(ctx context.Context) ([]model.User, error)
+	CreateUser(ctx context.Context, req *model.User) (*model.User, error)
 }
 type UserService interface {
 	GetById(ctx context.Context, id string) (*model.User, error)
 	GetAll(ctx context.Context) ([]model.User, error)
+	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
 }
 
 type userService struct {
@@ -37,4 +39,12 @@ func (s *userService) GetAll(ctx context.Context) ([]model.User, error) {
 		return nil, fmt.Errorf("GetAll have error:  %w", err)
 	}
 	return users, nil
+}
+
+func (s *userService) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+	user, err := s.repo.CreateUser(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("CreateUser have error: %w", err)
+	}
+	return user, nil
 }

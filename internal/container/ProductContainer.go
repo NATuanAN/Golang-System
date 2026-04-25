@@ -19,7 +19,7 @@ type productContainer struct {
 
 func NewProductContainer(db *gorm.DB) *productContainer {
 	repo := repository.NewProductRepo(db)
-	service := service.ProductService(repo)
+	service := service.NewProductService(repo)
 	handler := handler.NewProductHandler(service)
 
 	return &productContainer{handler}

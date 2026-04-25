@@ -2,13 +2,13 @@
 -- 1. User
 -- ==========================================
 CREATE TABLE users_table (
-                             UserID SERIAL PRIMARY KEY,
-                             Name VARCHAR(100) NOT NULL,
-                             Email VARCHAR(150) UNIQUE NOT NULL,
-                             Password VARCHAR(255) NOT NULL,
-                             PhoneNumber VARCHAR(10),
-                             AccountType VARCHAR(10) NOT NULL CHECK (AccountType IN ('Buyer', 'Seller', 'Admin')),
-                            Active VARCHAR(10) NOT NULL CHECK (Active IN ('active','ban'))
+    UserID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(150) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    PhoneNumber VARCHAR(10),
+    AccountType VARCHAR(10) NOT NULL CHECK (AccountType IN ('Buyer', 'Seller', 'Admin')),
+    Active VARCHAR(10) NOT NULL CHECK (Active IN ('active','ban'))
 );
 
 INSERT INTO users_table(Name,Email,Password,AccountType,Active)
