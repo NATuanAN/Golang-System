@@ -7,7 +7,6 @@ import (
 	"go-project/internal/model"
 	"go-project/pkg/apperror"
 
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -40,26 +39,20 @@ func (r *userRepo) FindAll(ctx context.Context) ([]model.User, error) {
 	return user, nil
 }
 
+func (r *userRepo) FindByEmail(ctx context.Context, email string) (*model.User, error) {
+	var user model.User
+
+	err := r.db.WithContext(ctx).First(&user, "email = ?", email).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return &user, nil
+}
+
 func (r *userRepo) CreateUser(ctx context.Context, req *model.User) (*model.User, error) {
-	repo := r.db.WithContext(ctx)
-
-	var existed model.User
-	err := repo.First(&existed, "email = ?", req.Email).Error
-
-	if err == nil {
-		return nil, apperror.ErrConflict
+	// var user model.User
+	if err := r.db.WithContext(ctx).Create(req).Error; err != nil {
+		return nil, fmt.Errorf("userRepo.CreateUser: %w", err)
 	}
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, fmt.Errorf("userRepo.Register check email: %w", err)
-	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, fmt.Errorf("userRepo.Register hash password: %w", err)
-	}
-	req.Password = string(hashedPassword)
-	if err := repo.Create(&req).Error; err != nil {
-		return nil, fmt.Errorf("userRepo.Register create: %w", err)
-	}
-
 	return req, nil
 }

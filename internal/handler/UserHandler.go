@@ -12,6 +12,7 @@ type UserHandler interface {
 	GetById(c *gin.Context)
 	GetAll(c *gin.Context)
 	CreateUser(c *gin.Context)
+	GetByEmail(c *gin.Context)
 }
 
 type userHandler struct {
@@ -31,7 +32,10 @@ func (h *userHandler) GetAll(c *gin.Context) {
 	users, err := h.service.GetAll(c.Request.Context())
 	response.Response(c, users, err)
 }
-
+func (h *userHandler) GetByEmail(c *gin.Context) {
+	user, err := h.service.GetByEmail(c.Request.Context(), c.Param("email"))
+	response.Response(c, user, err)
+}
 func (h *userHandler) CreateUser(c *gin.Context) {
 	var user model.User
 	if err := c.ShouldBindBodyWithJSON(&user); err != nil {
