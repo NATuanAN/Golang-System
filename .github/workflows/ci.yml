@@ -45,7 +45,8 @@ jobs:
 
       - name: Install dependencies
         run: go mod download
-
+      - name: Test
+        run: go test ./...
       - name: Lint
         uses: golangci/golangci-lint-action@v7
         with:
