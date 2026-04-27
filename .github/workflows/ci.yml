@@ -45,15 +45,13 @@ jobs:
 
       - name: Install dependencies
         run: go mod download
-      - name: Test
-        run: go test ./...
       - name: Lint
         uses: golangci/golangci-lint-action@v7
         with:
           version: latest
 
       - name: Test
-        run: go test ./...
+        run: go test ./test/...
         env:
           DB_HOST: localhost
           DB_PORT: 5432
