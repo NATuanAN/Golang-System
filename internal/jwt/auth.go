@@ -6,15 +6,17 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 )
 
 var secretKey []byte
 
 func init() {
+	godotenv.Load()
 	key := os.Getenv("KEY")
-	if key == "" {
-		panic("jwt: KEY environment variable is not set")
-	}
+	// if key == "" {
+	// 	panic("jwt: KEY environment variable is not set")
+	// }
 	secretKey = []byte(key)
 }
 

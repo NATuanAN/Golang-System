@@ -14,7 +14,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("wrong env")
+		log.Fatalf("wrong env")
 	}
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -24,13 +24,12 @@ func main() {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 	)
-
 	db := database.Connect(dsn)
 	connect := container.NewContainer(db)
 	router := router.SetupRouter(connect)
 
 	if err := router.Run(":8000"); err != nil {
-		log.Fatal("The system fail")
+		log.Fatalf("The system fail")
 	}
 
 }
