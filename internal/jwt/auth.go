@@ -3,25 +3,19 @@ package jwt
 import (
 	"fmt"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var (
-	secretKey []byte
-	once      sync.Once
-)
+var secretKey []byte
 
-func initKey() {
-	once.Do(func() {
-		key := os.Getenv("KEY")
-		if key == "" {
-			panic("jwt: KEY environment variable is not set")
-		}
-		secretKey = []byte(key)
-	})
+func init() {
+	key := os.Getenv("KEY")
+	if key == "" {
+		panic("jwt: KEY environment variable is not set")
+	}
+	secretKey = []byte(key)
 }
 
 type Claims struct {
