@@ -44,7 +44,7 @@ func (r *userRepo) FindByEmail(ctx context.Context, email string) (*model.User, 
 
 	err := r.db.WithContext(ctx).First(&user, "email = ?", email).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, apperror.ErrNotFound
 	}
 	return &user, nil
 }

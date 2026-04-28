@@ -12,6 +12,7 @@ const (
 	NotFound     Kind = "not_found"
 	Unauthorized Kind = "unauthorized"
 	Conflict     Kind = "conflict"
+	BadRequest   Kind = "bad_request"
 )
 
 func (e *AppError) Error() string { return e.message }
@@ -22,10 +23,15 @@ var (
 	ErrNotFound     = &AppError{code: 404, kind: NotFound, message: "not found"}
 	ErrUnauthorized = &AppError{code: 401, kind: Unauthorized, message: "unauthorized"}
 	ErrConflict     = &AppError{code: 409, kind: Conflict, message: "conflict"}
+	ErrBadRequest   = &AppError{code: 400, kind: BadRequest, message: "bad_request"}
 )
 
-func New(code int, kind Kind, message string) error {
-	return &AppError{code: code, kind: kind, message: message}
+func (e *AppError) WithMessage(message string) *AppError {
+	return &AppError{
+		code:    e.code,
+		kind:    e.kind,
+		message: message,
+	}
 }
 func (e *AppError) Is(target error) bool {
 	t, ok := target.(*AppError)

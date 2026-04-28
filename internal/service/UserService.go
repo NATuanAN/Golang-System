@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"go-project/internal/jwt"
 	"go-project/internal/model"
 	"go-project/pkg/apperror"
 
@@ -20,6 +22,7 @@ type UserService interface {
 	GetAll(ctx context.Context) ([]model.User, error)
 	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
 	GetByEmail(ctx context.Context, email string) (*model.User, error)
+	Login(ctx context.Context, email string, password string) (string, error)
 }
 
 type userService struct {
@@ -55,24 +58,51 @@ func (s *userService) GetByEmail(ctx context.Context, email string) (*model.User
 }
 
 func (s *userService) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
-	existing, err := s.repo.FindByEmail(ctx, user.Email)
+	_, err := s.repo.FindByEmail(ctx, user.Email)
 	if err != nil {
-		return nil, fmt.Errorf("userService.CreateUser: %w", err)
-	}
-	if existing != nil {
-		return nil, fmt.Errorf("userService.CreateUser: %w", apperror.ErrConflict)
+		if !errors.Is(err, apperror.ErrNotFound) {
+			return nil, fmt.Errorf("userService.CreateUser: %w", err)
+		}
+	} else {
+		return nil, apperror.ErrConflict.WithMessage(
+			fmt.Sprintf("email %s already exists", user.Email),
+		)
 	}
 
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, fmt.Errorf("userService.CreateUser: %w", err)
+		return nil, fmt.Errorf("userService.CreateUser hash password: %w", err)
 	}
 	user.Password = string(hashedPass)
-
 	created, err := s.repo.CreateUser(ctx, user)
 	if err != nil {
 		return nil, fmt.Errorf("userService.CreateUser: %w", err)
 	}
 
 	return created, nil
+}
+
+func (s *userService) Login(ctx context.Context, email string, password string) (string, error) {
+	if email == "" || password == "" {
+		return "", apperror.ErrBadRequest.WithMessage("Email or password must not be null or empty")
+	}
+
+	existing, err := s.repo.FindByEmail(ctx, email)
+	if err != nil {
+		if errors.Is(err, apperror.ErrNotFound) {
+			return "", apperror.ErrUnauthorized.WithMessage("Invalid email or password")
+		}
+		return "", fmt.Errorf("userService.Login: %w", err)
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(existing.Password), []byte(password)); err != nil {
+		return "", apperror.ErrUnauthorized.WithMessage("Invalid email or password")
+	}
+
+	token, err := jwt.Generate(existing.ID)
+	if err != nil {
+		return "", fmt.Errorf("userService.Login: %w", err)
+	}
+
+	return token, nil
 }

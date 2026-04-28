@@ -9,8 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    # env:
-    #   GOTOOLCHAIN: local
 
     services:
       postgres:
