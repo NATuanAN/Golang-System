@@ -11,13 +11,19 @@ import (
 
 var secretKey []byte
 
-func init() {
-	godotenv.Load()
+func InitJWT() error {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("No .env file found") // không panic
+	}
+
 	key := os.Getenv("KEY")
-	// if key == "" {
-	// 	panic("jwt: KEY environment variable is not set")
-	// }
+	if key == "" {
+		return fmt.Errorf("jwt: KEY environment variable is not set")
+	}
+
 	secretKey = []byte(key)
+	return nil
 }
 
 type Claims struct {
