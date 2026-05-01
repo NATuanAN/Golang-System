@@ -19,6 +19,7 @@ func NewProductService(repo ProductRepo) *productService {
 	return &productService{repo}
 }
 func (s *productService) GetAll(ctx context.Context) ([]model.Product, error) {
+
 	productList, err := s.repo.FindAll(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("GetAll have error:  %w", err)

@@ -7,6 +7,7 @@ import (
 
 	"go-project/database"
 	"go-project/internal/container"
+	"go-project/internal/redis"
 	"go-project/internal/router"
 
 	"github.com/joho/godotenv"
@@ -24,8 +25,17 @@ func main() {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 	)
+
 	db := database.Connect(dsn)
-	connect := container.NewContainer(db)
+	rdb, err := redis.NewRedis(os.Getenv("REDIS_LINK"))
+	if err != nil {
+		log.Fatalf("Redis is not running")
+
+	}
+
+	redisService := redis.NewRedisService(rdb)
+
+	connect := container.NewContainer(db, redisService)
 	router := router.SetupRouter(connect)
 
 	if err := router.Run(":8000"); err != nil {

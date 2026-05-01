@@ -14,7 +14,7 @@ var secretKey []byte
 func InitJWT() error {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("No .env file found") // không panic
+		fmt.Println("No .env file found")
 	}
 
 	key := os.Getenv("KEY")

@@ -2,6 +2,7 @@ package container
 
 import (
 	"go-project/internal/handler"
+	"go-project/internal/redis"
 	"go-project/internal/repository"
 	"go-project/internal/service"
 
@@ -17,10 +18,10 @@ type productContainer struct {
 	ProductHandler
 }
 
-func NewProductContainer(db *gorm.DB) *productContainer {
+func NewProductContainer(db *gorm.DB, redis redis.Cache) *productContainer {
 	repo := repository.NewProductRepo(db)
 	service := service.NewProductService(repo)
-	handler := handler.NewProductHandler(service)
+	handler := handler.NewProductHandler(service, redis)
 
 	return &productContainer{handler}
 }
