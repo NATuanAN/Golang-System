@@ -9,8 +9,8 @@ import (
 
 func UserRounter(rg *gin.RouterGroup, handler handler.UserHandler) {
 	users := rg.Group("/users")
-	users.GET("/:id", handler.GetById)
-	users.GET("/all", middleware.AuthMiddleware(), handler.GetAll)
+	users.GET("/all", middleware.AuthenticationMiddleware(), handler.GetAll)
+	users.GET("/:id", middleware.AuthenticationMiddleware(), middleware.AuthorizationMiddleware(), handler.GetById)
 	users.GET("/email/:email", handler.GetByEmail)
 	users.POST("/create", handler.CreateUser)
 	users.POST("/login", handler.Login)
