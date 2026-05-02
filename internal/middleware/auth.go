@@ -45,7 +45,7 @@ func AuthorizationMiddleware() gin.HandlerFunc {
 		}
 
 		id, ok := userId.(uint)
-		if ok == false {
+		if !ok {
 			response.Response(c, nil, apperror.ErrUnauthorized.WithMessage("The token is not valid"))
 			c.Abort()
 			return
