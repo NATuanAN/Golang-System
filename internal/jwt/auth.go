@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"fmt"
+	"go-project/internal/model"
 	"os"
 	"time"
 
@@ -27,13 +28,15 @@ func InitJWT() error {
 }
 
 type Claims struct {
-	UserID uint `json:"user_id"`
+	UserID uint              `json:"user_id"`
+	Role   model.AccountType `json:"role"`
 	jwt.RegisteredClaims
 }
 
-func Generate(userID uint) (string, error) {
+func Generate(user *model.User) (string, error) {
 	claims := Claims{
-		UserID: userID,
+		UserID: user.ID,
+		Role:   user.AccountType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

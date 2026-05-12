@@ -99,7 +99,7 @@ func (s *userService) Login(ctx context.Context, email string, password string) 
 		return "", apperror.ErrUnauthorized.WithMessage("Invalid email or password")
 	}
 
-	token, err := jwt.Generate(existing.ID)
+	token, err := jwt.Generate(existing)
 	if err != nil {
 		return "", fmt.Errorf("userService.Login: %w", err)
 	}
