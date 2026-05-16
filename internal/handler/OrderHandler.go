@@ -12,6 +12,10 @@ type OrderService interface {
 	GetAll(ctx context.Context) ([]model.Order, error)
 }
 
+type OrderHandler interface {
+	GetAll(c *gin.Context)
+}
+
 type orderHandler struct {
 	service OrderService
 }

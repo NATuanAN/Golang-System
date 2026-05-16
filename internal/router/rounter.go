@@ -14,6 +14,5 @@ func SetupRouter(container *container.Container) *gin.Engine {
 	UserRounter(v1, container.UserHandler)
 	ProductRounter(v1, container.ProductHandler)
 	OrderRounter(v1, container.OrderHandler)
-	OrderItemRounter(v1, container.OrderItemHandler)
 	return route
 }

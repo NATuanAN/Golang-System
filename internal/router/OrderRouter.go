@@ -13,4 +13,5 @@ type OrderHandler interface {
 func OrderRounter(rg *gin.RouterGroup, handler OrderHandler) {
 	orders := rg.Group("/orders")
 	orders.GET("/all", middleware.AuthenticationMiddleware(), middleware.AuthorizationMiddleware(), handler.GetAll)
+	orders.POST("/create", handler.GetAll)
 }
